@@ -1,0 +1,8 @@
+[submodule "ocaml-4.14-unchanged"]
+	path = ocaml-4.14-unchanged
+	url = https://github.com/ocaml/ocaml
+	branch = 4.14
+[submodule "ocaml-4.14-hacked-gc"]
+	path = ocaml-4.14-hacked-gc
+	url = https://github.com/ocaml/ocaml
+	branch = 4.14
