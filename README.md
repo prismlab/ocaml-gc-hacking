@@ -13,5 +13,11 @@ On macOS,
 
 ```bash
 brew install bdw-gc
-CFLAGS="-I/opt/homebrew/Cellar/bdw-gc/8.2.4/include" LD_FLAGS="-L/opt/homebrew/Cellar/bdw-gc/8.2.4/lib/ -lgc" ./configure
+CFLAGS="-I/opt/homebrew/Cellar/bdw-gc/8.2.4/include -L/opt/homebrew/Cellar/bdw-gc/8.2.4/lib/ -lgc" ./configure
+```
+
+on Ubuntu,
+```
+sudo apt install libgc-dev
+LIBS="-lgc" ./configure
 ```
