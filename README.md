@@ -11,6 +11,7 @@ make -j
 make install
 #Build the modified compiler
 cd ../ocaml-4.14-hacked-gc
+./configure
 make -C runtime -j ocamlrun ocamlrund
 #Run tests
 cd ../tests
