@@ -27,5 +27,5 @@ make
     branches:
     + `malloc-nogc` -- uses `malloc` and does not GC
     + `bdwgc` -- uses Boehm GC
-    + `verified-gc` -- uses the verified GC (+ unverified allocator)
-* `tests` -- contains some tests
+    + `verified-gc` -- uses the verified GC (+ unverified allocator). This is the branch that's pointed to by default in the submodule.
+* `tests` -- contains some test
