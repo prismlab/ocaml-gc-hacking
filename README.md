@@ -6,12 +6,12 @@
 git clone --recurse-submodules https://github.com/prismlab/ocaml-gc-hacking
 #Build the unchanged compiler
 cd ocaml-gc-hacking/ocaml-4.14-unchanged
-./configure --prefix=`pwd`/_install
+./configure --prefix=`pwd`/_install  --disable-naked-pointers
 make -j
 make install
 #Build the modified compiler
 cd ../ocaml-4.14-hacked-gc
-./configure
+./configure --disable-naked-pointers
 make -C runtime -j ocamlrun ocamlrund
 #Run tests
 cd ../tests
