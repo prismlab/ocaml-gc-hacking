@@ -18,6 +18,16 @@ cd ../tests
 make
 ```
 
+## Running binarytrees.ml
+
+``` bash
+MIN_EXPANSION_WORDSIZE=2097152 HEIGHT=10 make -B binarytrees.byte
+```
+
+- `MIN_EXPANSION_WORDSIZE` controls the size of heap chunk allocated by the allocator. The size of heap will be `MIN_EXPANSION_WORDSIZE * <word-size>`.
+- `HEIGHT` is the parameter used in binarytrees.ml
+
+
 ## Repositories
 
 * `ocaml-4.14-unchanged` -- The unchanged OCaml 4.14 compiler. Used for
