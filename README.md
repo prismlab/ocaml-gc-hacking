@@ -18,6 +18,17 @@ cd ../tests
 make
 ```
 
+## Checkout bdwgc branch
+
+Need to have bdwgc installed globally
+
+```bash
+git worktree add ../bdwgc-branch origin/bdwgc
+```
+
+Run the same build steps as hacked-gc
+
+
 ## Running binarytrees.ml
 
 ``` bash

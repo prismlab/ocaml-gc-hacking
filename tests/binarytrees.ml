@@ -6,18 +6,18 @@
  * *reset*
  *)
 
-external trigger_verified_gc : unit -> unit = "caml_trigger_verified_gc"
+(* external trigger_verified_gc : unit -> unit = "caml_trigger_verified_gc" *)
 
-let run_few_verified_gc_cycles limit =
-  for i = 1 to limit do
-    let _ = Array.make 128 (Some 0) in
-    flush stdout;
-    trigger_verified_gc ()
-  done;
-  let () =
-    print_string ("Ran collection " ^ Int.to_string limit ^ " times\n")
-  in
-  flush stdout
+(* let run_few_verified_gc_cycles limit = *)
+(*   for i = 1 to limit do *)
+(*     let _ = Array.make 128 (Some 0) in *)
+(*     flush stdout; *)
+(*     trigger_verified_gc () *)
+(*   done; *)
+(*   let () = *)
+(*     print_string ("Ran collection " ^ Int.to_string limit ^ " times\n") *)
+(*   in *)
+(*   flush stdout *)
 
 type 'a tree = Empty | Node of 'a tree * 'a * 'a tree
 
@@ -59,9 +59,7 @@ let rec loop_depths d =
   done
 
 let () =
-  run_few_verified_gc_cycles 1000;
   flush stdout;
   loop_depths min_depth;
   Printf.printf "long lived tree of depth %i\t check: %i\n" max_depth
-    (check long_lived_tree);
-  run_few_verified_gc_cycles 1000
+    (check long_lived_tree)
