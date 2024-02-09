@@ -2,6 +2,20 @@
 	@echo "Building: " $@
 	@../ocaml-4.14-unchanged/_install/bin/ocamlc -custom -cclib -L../ocaml-4.14-hacked-gc/runtime/verified_gc -cclib -lvergc -cclib -lrust_allocator -o $@ $<
 
+benchmark: binarytrees.csv fasta.csv quicksort.csv fannkuchredux.csv
+
+test: binarytrees.byte fasta.byte quicksort.byte fannkuchredux.byte count_change.byte
+	@echo "Running binarytrees"
+	MIN_EXPANSION_WORDSIZE=134217728 '../ocaml-4.14-hacked-gc/runtime/ocamlrun' binarytrees.byte 16
+	@echo "Running fasta"
+	MIN_EXPANSION_WORDSIZE=134217728 '../ocaml-4.14-hacked-gc/runtime/ocamlrun' fasta.byte 2_500_000A
+	@echo "Running quicksort"
+	MIN_EXPANSION_WORDSIZE=8000000 '../ocaml-4.14-hacked-gc/runtime/ocamlrun' quicksort.byte 5_000_000
+	@echo "Running fannkuchredux"
+	'../ocaml-4.14-hacked-gc/runtime/ocamlrun' fannkuchredux.byte 11
+	@echo "Running count_change"
+	MIN_EXPANSION_WORDSIZE=20000000 ../ocaml-4.14-hacked-gc/runtime/ocamlrun ./count_change.byte 150
+
 
 binarytrees.csv: binarytrees.byte
 	MIN_EXPANSION_WORDSIZE=134217728 hyperfine -P depth 11 16  --export-csv $@ '../ocaml-4.14-hacked-gc/runtime/ocamlrun $< {depth}' '../bdwgc-branch/runtime/ocamlrun $< {depth}' '../ocaml-4.14-unchanged/runtime/ocamlrun $< {depth}'
