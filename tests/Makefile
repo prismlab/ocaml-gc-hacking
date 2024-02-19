@@ -16,6 +16,8 @@ test: binarytrees.byte fasta.byte quicksort.byte fannkuchredux.byte count_change
 	@echo "Running count_change"
 	MIN_EXPANSION_WORDSIZE=20000000 ../ocaml-4.14-hacked-gc/runtime/ocamlrun ./count_change.byte 150
 
+count_change.csv: count_change.byte
+	MIN_EXPANSION_WORDSIZE=20000000 hyperfine -P param 100 150 -D 10 --export-csv $@ '../ocaml-4.14-hacked-gc/runtime/ocamlrun $< {param}' '../bdwgc-branch/runtime/ocamlrun $< {param}' '../ocaml-4.14-unchanged/runtime/ocamlrun $< {param}'
 
 binarytrees.csv: binarytrees.byte
 	MIN_EXPANSION_WORDSIZE=134217728 hyperfine -P depth 11 16  --export-csv $@ '../ocaml-4.14-hacked-gc/runtime/ocamlrun $< {depth}' '../bdwgc-branch/runtime/ocamlrun $< {depth}' '../ocaml-4.14-unchanged/runtime/ocamlrun $< {depth}'
