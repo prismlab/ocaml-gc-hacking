@@ -6,3 +6,7 @@
 	path = ocaml-4.14-hacked-gc
 	url = https://github.com/kayceesrk/ocaml
 	branch = verified-gc
+[submodule "ocaml-4.14-bdwgc"]
+	path = ocaml-4.14-bdwgc
+	url = https://github.com/kayceesrk/ocaml
+	branch = bdwgc
