@@ -36,6 +36,14 @@ HACKED_GC=../ocaml-4.14-hacked-gc/runtime/ocamlrun
 BDWGC=../ocaml-4.14-bdwgc/runtime/ocamlrun
 UNCHANGED=../ocaml-4.14-unchanged/runtime/ocamlrun
 
+.PHONY: nbodies.bench clean
+
+nbodies.bench: nbodies.byte
+	MIN_EXPANSION_WORDSIZE=100000000 hyperfine --export-csv \
+		'$(HACKED_GC) nbodies.byte 50000000' \
+		'$(BDWGC) nbodies.byte 50000000' \
+		'$(UNCHANGED) nbodies.byte 50000000'
+
 bench: binarytrees.byte fasta.byte quicksort.byte fannkuchredux.byte count_change.byte
 	MIN_EXPANSION_WORDSIZE=100000000 hyperfine --export-csv \
 		# binarytrees
