@@ -8,7 +8,7 @@ test: binarytrees.byte fasta.byte quicksort.byte fannkuchredux.byte count_change
 	@echo "Running binarytrees"
 	MIN_EXPANSION_WORDSIZE=134217728 '../ocaml-4.14-hacked-gc/runtime/ocamlrun' binarytrees.byte 16
 	@echo "Running fasta"
-	MIN_EXPANSION_WORDSIZE=134217728 '../ocaml-4.14-hacked-gc/runtime/ocamlrun' fasta.byte 2_500_000A
+	MIN_EXPANSION_WORDSIZE=134217728 '../ocaml-4.14-hacked-gc/runtime/ocamlrun' fasta.byte 2_500_000
 	@echo "Running quicksort"
 	MIN_EXPANSION_WORDSIZE=8000000 '../ocaml-4.14-hacked-gc/runtime/ocamlrun' quicksort.byte 5_000_000
 	@echo "Running fannkuchredux"
@@ -48,6 +48,28 @@ binarytrees.bench: binarytrees.byte
 		'$(HACKED_GC) binarytrees.byte 16' \
 		'$(BDWGC) binarytrees.byte 16' \
 		'$(UNCHANGED) binarytrees.byte 16' \
+
+knucleotide.bench:  knucleotide.byte
+	MIN_EXPANSION_WORDSIZE=134217728 hyperfine --export-csv $@.csv \
+		'$(HACKED_GC) knucleotide.byte' \
+		'$(BDWGC) knucleotide.byte' \
+		'$(UNCHANGED) knucleotide.byte'
+
+spectralnorm.bench: spectralnorm.byte
+	hyperfine --export-csv $@.csv \
+		'$(HACKED_GC) spectralnorm.byte 4000' \
+		'$(BDWGC) spectralnorm.byte 4000' \
+		'$(UNCHANGED) spectralnorm.byte 4000'
+
+# The heap size is very particular here because I could see that with this size,
+# it'll trigger one GC and then not get OOM also. Sweep with merging needs much much less
+# memory(it worked even with default heap size which is a few MBs)
+mandelbrot.bench: mandelbrot.byte
+	MIN_EXPANSION_WORDSIZE=201326592 hyperfine --export-csv $@.csv \
+		'$(HACKED_GC) mandelbrot.byte 1000' \
+		'$(BDWGC) mandelbrot.byte 1000' \
+		'$(UNCHANGED) mandelbrot.byte 1000'
+
 
 fasta.bench: fasta.byte
 	MIN_EXPANSION_WORDSIZE=$$((134217728 / 4)) \
