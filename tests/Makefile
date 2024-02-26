@@ -88,11 +88,27 @@ cpdf-src:
 cpdf-src-clean:
 	rm -rf cpdf-src
 
-cpdf: cpdf-src
+cpdf-vergc: cpdf-src
 	PWD=$(shell pwd)
+	make -j -C $< clean
 	BCSUFFIX='-vergc' ALL_LDFLAGS='-use-runtime $(PWD)/../ocaml-4.14-hacked-gc/runtime/ocamlrun' $(MAKE) -C $< bc
 	@echo "Running cpdf with verified gc runtime"
 	MIN_EXPANSION_WORDSIZE=134217728 cpdf-src/cpdf-vergc -merge $</*.pdf -o /dev/null
+
+cpdf-bdwgc: cpdf-src
+	PWD=$(shell pwd)
+	make -j -C $< clean
+	BCSUFFIX='-bdwgc' ALL_LDFLAGS='-use-runtime $(PWD)/../ocaml-4.14-bdwgc/runtime/ocamlrun' $(MAKE) -C $< bc
+	@echo "Running cpdf with bdwgc gc runtime"
+	MIN_EXPANSION_WORDSIZE=134217728 cpdf-src/cpdf-bdwgc -merge $</*.pdf -o /dev/null
+
+cpdf-unchanged: cpdf-src
+	PWD=$(shell pwd)
+	make -j -C $< clean
+	BCSUFFIX='-unchanged' ALL_LDFLAGS='-use-runtime $(PWD)/../ocaml-4.14-unchanged/runtime/ocamlrun' $(MAKE) -C $< bc
+	@echo "Running cpdf with unchanged gc runtime"
+	MIN_EXPANSION_WORDSIZE=134217728 cpdf-src/cpdf-unchanged -merge $</*.pdf -o /dev/null
+
 
 clean:
 	rm -f *.cmi *.cmo *.cmx *.o *.byte
