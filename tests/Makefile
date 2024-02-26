@@ -36,36 +36,50 @@ HACKED_GC=../ocaml-4.14-hacked-gc/runtime/ocamlrun
 BDWGC=../ocaml-4.14-bdwgc/runtime/ocamlrun
 UNCHANGED=../ocaml-4.14-unchanged/runtime/ocamlrun
 
-.PHONY: nbodies.bench clean
-
 nbodies.bench: nbodies.byte
-	MIN_EXPANSION_WORDSIZE=100000000 hyperfine --export-csv \
-		'$(HACKED_GC) nbodies.byte 50000000' \
-		'$(BDWGC) nbodies.byte 50000000' \
-		'$(UNCHANGED) nbodies.byte 50000000'
+	hyperfine \
+		'$(HACKED_GC) nbodies.byte 100000' \
+		'$(BDWGC) nbodies.byte 100000' \
+		'$(UNCHANGED) nbodies.byte 100000'
 
-bench: binarytrees.byte fasta.byte quicksort.byte fannkuchredux.byte count_change.byte
-	MIN_EXPANSION_WORDSIZE=100000000 hyperfine --export-csv \
-		# binarytrees
+binarytrees.bench: binarytrees.byte
+	MIN_EXPANSION_WORDSIZE=134217728 \
+	hyperfine \
 		'$(HACKED_GC) binarytrees.byte 16' \
 		'$(BDWGC) binarytrees.byte 16' \
 		'$(UNCHANGED) binarytrees.byte 16' \
-		# fasta
+
+fasta.bench: fasta.byte
+	MIN_EXPANSION_WORDSIZE=$$((134217728 / 4)) \
+	hyperfine \
 		'$(HACKED_GC) fasta.byte 5_000_000' \
 		'$(BDWGC) fasta.byte 5_000_000' \
 		'$(UNCHANGED) fasta.byte 5_000_000' \
-		# count_change
+
+count_change.bench: count_change.byte
+	MIN_EXPANSION_WORDSIZE=20000000 \
+	hyperfine \
 		'$(HACKED_GC) count_change.byte 200' \
 		'$(BDWGC) count_change.byte 200' \
 		'$(UNCHANGED) count_change.byte 200'
-		# fannkuchredux
+
+fannkuchredux.bench: fannkuchredux.byte
+	hyperfine \
 		'$(HACKED_GC) fannkuchredux.byte 10' \
 		'$(BDWGC) fannkuchredux.byte 10' \
 		'$(UNCHANGED) fannkuchredux.byte 10' \
-		# quicksort
+
+quicksort.bench: quicksort.byte
+	MIN_EXPANSION_WORDSIZE=8000000 \
+	hyperfine \
 		'$(HACKED_GC) quicksort.byte 2_500_000' \
 		'$(BDWGC) quicksort.byte 2_500_000' \
 		'$(UNCHANGED) quicksort.byte 2_500_000'
+
+
+.PHONY: %.bench
+
+bench: nbodies.bench binarytrees.bench fasta.bench count_change.bench fannkuchredux.bench quicksort.bench
 
 cpdf-src:
 	git clone https://github.com/johnwhitington/cpdf-source $@
