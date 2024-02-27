@@ -37,67 +37,63 @@ BDWGC=../ocaml-4.14-bdwgc/runtime/ocamlrun
 UNCHANGED=../ocaml-4.14-unchanged/runtime/ocamlrun
 
 nbodies.bench: nbodies.byte
-	hyperfine \
+	hyperfine --export $@.csv \
 		'$(HACKED_GC) nbodies.byte 100000' \
 		'$(BDWGC) nbodies.byte 100000' \
 		'$(UNCHANGED) nbodies.byte 100000'
 
 binarytrees.bench: binarytrees.byte
 	MIN_EXPANSION_WORDSIZE=134217728 \
-	hyperfine \
+	hyperfine --export $@.csv \
 		'$(HACKED_GC) binarytrees.byte 16' \
 		'$(BDWGC) binarytrees.byte 16' \
 		'$(UNCHANGED) binarytrees.byte 16' \
 
-knucleotide.bench:  knucleotide.byte
-	MIN_EXPANSION_WORDSIZE=134217728 hyperfine --export-csv $@.csv \
+knucleotide.bench: knucleotide.byte
+	MIN_EXPANSION_WORDSIZE=5288608 \
+	hyperfine --export-csv $@.csv \
 		'$(HACKED_GC) knucleotide.byte' \
 		'$(BDWGC) knucleotide.byte' \
 		'$(UNCHANGED) knucleotide.byte'
 
 spectralnorm.bench: spectralnorm.byte
 	hyperfine --export-csv $@.csv \
-		'$(HACKED_GC) spectralnorm.byte 4000' \
-		'$(BDWGC) spectralnorm.byte 4000' \
-		'$(UNCHANGED) spectralnorm.byte 4000'
+		'$(HACKED_GC) spectralnorm.byte 1000' \
+		'$(BDWGC) spectralnorm.byte 1000' \
+		'$(UNCHANGED) spectralnorm.byte 1000'
 
-# The heap size is very particular here because I could see that with this size,
-# it'll trigger one GC and then not get OOM also. Sweep with merging needs much much less
-# memory(it worked even with default heap size which is a few MBs)
 mandelbrot.bench: mandelbrot.byte
-	MIN_EXPANSION_WORDSIZE=201326592 hyperfine --export-csv $@.csv \
+	hyperfine --export-csv $@.csv \
 		'$(HACKED_GC) mandelbrot.byte 1000' \
 		'$(BDWGC) mandelbrot.byte 1000' \
 		'$(UNCHANGED) mandelbrot.byte 1000'
 
-
 fasta.bench: fasta.byte
 	MIN_EXPANSION_WORDSIZE=$$((134217728 / 4)) \
-	hyperfine \
+	hyperfine --export $@.csv \
 		'$(HACKED_GC) fasta.byte 5_000_000' \
 		'$(BDWGC) fasta.byte 5_000_000' \
 		'$(UNCHANGED) fasta.byte 5_000_000' \
 
 count_change.bench: count_change.byte
 	MIN_EXPANSION_WORDSIZE=20000000 \
-	hyperfine \
+	hyperfine --export $@.csv \
 		'$(HACKED_GC) count_change.byte 200' \
 		'$(BDWGC) count_change.byte 200' \
 		'$(UNCHANGED) count_change.byte 200'
 
 fannkuchredux.bench: fannkuchredux.byte
-	hyperfine \
+	hyperfine --export $@.csv \
 		'$(HACKED_GC) fannkuchredux.byte 10' \
 		'$(BDWGC) fannkuchredux.byte 10' \
 		'$(UNCHANGED) fannkuchredux.byte 10' \
 
 quicksort.bench: quicksort.byte
 	MIN_EXPANSION_WORDSIZE=8000000 \
-	hyperfine \
+	hyperfine --export $@.csv \
 		'$(HACKED_GC) quicksort.byte 2_500_000' \
 		'$(BDWGC) quicksort.byte 2_500_000' \
 		'$(UNCHANGED) quicksort.byte 2_500_000'
-
 
 .PHONY: %.bench
 
