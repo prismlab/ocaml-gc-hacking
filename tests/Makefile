@@ -134,6 +134,12 @@ cpdf-unchanged: cpdf-src
 	@echo "Running cpdf with unchanged gc runtime"
 	MIN_EXPANSION_WORDSIZE=134217728 cpdf-src/cpdf-unchanged -merge $</*.pdf -o /dev/null
 
+ydump:
+	# opam dependencies fetching is expected to be done manually
+	PWD=$(shell pwd)
+	cd yojson; HACKED_GC_PATH=$(PWD)/../ocaml-4.14-hacked-gc/ dune build ydump.bc
+	# triggers a few gc cycles too
+	MIN_EXPANSION_WORDSIZE=8388608 $(HACKED_GC) yojson/_build/default/ydump.bc -c yojson/sample.json
 
 clean:
 	rm -f *.cmi *.cmo *.cmx *.o *.byte
