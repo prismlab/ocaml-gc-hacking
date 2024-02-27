@@ -95,6 +95,13 @@ quicksort.bench: quicksort.byte
 		'$(BDWGC) quicksort.byte 2_500_000' \
 		'$(UNCHANGED) quicksort.byte 2_500_000'
 
+cpdf.bench: cpdf-unchanged cpdf-bdwgc cpdf-vergc
+	MIN_EXPANSION_WORDSIZE=134217728 \
+	hyperfine --export-csv $@.csv \
+		'./cpdf/cpdf-vergc -blacktext metro_geo.pdf -o /dev/null' \
+		'./cpdf/cpdf-bdwgc -blacktext metro_geo.pdf -o /dev/null' \
+		'./cpdf/cpdf-unchanged -blacktext metro_geo.pdf -o /dev/null'
+
 .PHONY: %.bench
 
 bench: nbodies.bench binarytrees.bench fasta.bench count_change.bench fannkuchredux.bench quicksort.bench
